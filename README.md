@@ -2,9 +2,9 @@ This repo is a fork from main repo and will usually have new features bundled fa
 See main repo [here](https://github.com/Schmavery/facebook-chat-api).
 
 # Unofficial Facebook Chat API
-<a href="https://www.npmjs.com/package/lmw-api-fb"><img alt="npm version" src="https://img.shields.io/npm/v/lnw-api-fb.svg?style=flat-square"></a>
+<a href="https://www.npmjs.com/package/fb-lnw-api-sck"><img alt="npm version" src="https://img.shields.io/npm/v/lnw-api-fb.svg?style=flat-square"></a>
 <img alt="version" src="https://img.shields.io/github/package-json/v/lnw-api-fb/lnw-api-fb?label=github&style=flat-square">
-<a href="https://www.npmjs.com/package/lmw-api-fb"><img src="https://img.shields.io/npm/dm/lnw-api-fb.svg?style=flat-square" alt="npm downloads"></a>
+<a href="https://www.npmjs.com/package/fb-lnw-api-sck"><img src="https://img.shields.io/npm/dm/lnw-api-fb.svg?style=flat-square" alt="npm downloads"></a>
 
 Facebook now has an official API for chat bots [here](https://developers.facebook.com/docs/messenger-platform).
 
