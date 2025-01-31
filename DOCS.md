@@ -54,19 +54,19 @@
 
 ### Password safety
 
-**Read this** before you _copy+paste_ examples from below.
+**Read this** ก่อนที่คุณจะ _copy+paste_ ตัวอย่างจากด้านล่าง เอาง่ยๆกูขี้เกียจแปล
 
-You should not store Facebook password in your scripts.
-There are few good reasons:
-* People who are standing behind you may look at your "code" and get your password if it is on the screen
-* Backups of source files may be readable by someone else. "_There is nothing secret in my code, why should I ever password protect my backups_"
-* You can't push your code to Github (or any onther service) without removing your password from the file.  Remember: Even if you undo your accidential commit with password, Git doesn't delete it, that commit is just not used but is still readable by everybody.
-* If you change your password in the future (maybe it leaked because _someone_ stored password in source file… oh… well…) you will have to change every occurrence in your scripts
+คุณไม่ควรเก็บรหัสผ่าน Facebook ไว้ในสคริปต์ของคุณ
+มีเหตุผลที่ดีบางประการ:
+* คนที่ยืนอยู่ข้างหลังคุณอาจดู "รหัส" ของคุณและรับรหัสผ่านของคุณหากอยู่บนหน้าจอ
+* การสำรองไฟล์ต้นฉบับอาจสามารถอ่านได้โดยบุคคลอื่น "_ไม่มีความลับในรหัสของฉัน ทำไมฉันต้องใช้รหัสผ่านเพื่อป้องกันข้อมูลสำรองของฉัน_"
+* คุณไม่สามารถพุชโค้ดของคุณไปที่ Github (หรือบริการอื่น ๆ ) โดยไม่ต้องลบรหัสผ่านออกจากไฟล์  ข้อควรจำ: แม้ว่าคุณจะยกเลิกการคอมมิตโดยไม่ตั้งใจด้วยรหัสผ่าน Git จะไม่ลบมัน แต่คอมมิตนั้นไม่ได้ใช้ แต่ทุกคนยังคงสามารถอ่านได้
+* หากคุณเปลี่ยนรหัสผ่านในอนาคต (บางทีอาจรั่วไหลเพราะ _someone_ เก็บรหัสผ่านไว้ในไฟล์ต้นฉบับ… โอ้… ก็…) คุณจะต้องเปลี่ยนทุกเหตุการณ์ในสคริปต์ของคุณ
 
-Preferred method is to have `login.js` that saves `AppState` to a file and then use that file from all your scripts.
-This way you can put password in your code for a minute, login to facebook and then remove it.
+วิธีที่ต้องการคือมี `login.js` ที่บันทึก `AppState` ลงในไฟล์ จากนั้นใช้ไฟล์นั้นจากสคริปต์ทั้งหมดของคุณ
+วิธีนี้ทำให้คุณสามารถใส่รหัสผ่านในรหัสของคุณสักครู่ เข้าสู่ระบบ Facebook แล้วลบออก
 
-If you want to be even more safe:  _login.js_ can get password with `require("readline")` or with environment variables like this:
+หากคุณต้องการความปลอดภัยมากยิ่งขึ้น: _login.js_ สามารถรับรหัสผ่านด้วย `require("readline")` หรือด้วยตัวแปรสภาพแวดล้อมเช่นนี้:
 ```js
 var credentials = {
     email: process.env.FB_EMAIL,
@@ -84,24 +84,23 @@ nodejs login.js
 <a name="login"></a>
 ### login(credentials, options, [callback])
 
-This function is returned by `require(...)` and is the main entry point to the API.
+Tฟังก์ชั่นของเขาส่งคืนโดย `require(...)` และเป็นจุดเริ่มต้นหลักของ API
 
-It allows the user to log into facebook given the right credentials.
+อนุญาตให้ผู้ใช้เข้าสู่ระบบ Facebook โดยได้รับข้อมูลรับรองที่ถูกต้อง
 
-Return a Promise that will resolve if logged in successfully, or reject if failed to login. (will not resolve or reject if callback is supplied!)
+ส่งคืนสัญญาที่จะแก้ไขหากเข้าสู่ระบบสำเร็จ หรือปฏิเสธหากเข้าสู่ระบบไม่สำเร็จ (จะไม่แก้ไขหรือปฏิเสธหากมีการโทรกลับ!)
 
-If `callback` is supplied:
+หากมีการระบุ `callback`:
 
-* `callback` will be called with a `null` object (for potential errors) and with an object containing all the available functions if logged in successfully.
+* `callback` จะถูกเรียกด้วยวัตถุ `null` (สำหรับข้อผิดพลาดที่อาจเกิดขึ้น) และวัตถุที่มีฟังก์ชันทั้งหมดที่มีอยู่หากเข้าสู่ระบบสำเร็จ
 
-* `callback` will be called with an error object if failed to login.
+* `callback` จะถูกเรียกพร้อมกับอ็อบเจ็กต์ข้อผิดพลาดหากเข้าสู่ระบบไม่สำเร็จ
 
-If `login-approval` error was thrown: Inside error object is `continue` function, you can call that function with 2FA code. The behaviour of this function depends on how you call `login` with:
+หากมีข้อผิดพลาด 'การอนุมัติการเข้าสู่ระบบ' เกิดขึ้น: ออบเจ็กต์ข้อผิดพลาดภายในคือฟังก์ชัน 'ดำเนินการต่อ' คุณสามารถเรียกใช้ฟังก์ชันนั้นด้วยรหัส 2FA ลักษณะการทำงานของฟังก์ชันนี้ขึ้นอยู่กับวิธีที่คุณเรียก 'เข้าสู่ระบบ' ด้วย:
 
-* If `callback` is not supplied (using `Promise`), this function will return a `Promise` that behaves like `Promise` received from `login`.
+* หากไม่ได้ระบุ 'callback' (โดยใช้ 'Promise') ฟังก์ชันนี้จะส่งคืน 'Promise' ที่ทำงานเหมือนกับ 'Promise' ที่ได้รับจาก 'login'
 
-* If `callback` is supplied, this function will still return a `Promise`, but it will not resolve. Instead, the result is called to `callback`.
-
+* หากมีการระบุ 'callback' ฟังก์ชันนี้จะยังคงส่งคืน 'Promise' แต่จะไม่ได้รับการแก้ไข แต่ผลลัพธ์กลับเรียกว่า 'โทรกลับ'
 __Arguments__
 
 * `credentials`: An object containing the fields `email` and `password` used to login, __*or*__ an object containing the field `appState`.
@@ -111,7 +110,7 @@ __Arguments__
 __Example (Email & Password)__: (it is no longer usable, please use [this](#loginWithAppstate) alternative method)
 
 ```js
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({email: "FB_EMAIL", password: "FB_PASSWORD"}, (err, api) => {
     if(err) return console.error(err);
@@ -123,7 +122,7 @@ __Example (Email & Password then save appState to file)__: (it is no longer usab
 
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({email: "FB_EMAIL", password: "FB_PASSWORD"}, (err, api) => {
     if(err) return console.error(err);
@@ -138,7 +137,7 @@ __Login Approvals (2-Factor Auth)__: When you try to login with Login Approvals 
 __Example__:
 
 ```js
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 const readline = require("readline");
 
 var rl = readline.createInterface({
@@ -176,7 +175,7 @@ __Review Recent Login__: Sometimes Facebook will ask you to review your recent l
 
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if(err) return console.error(err);
@@ -215,7 +214,7 @@ __Example__
 
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if (err) return console.error(err);
@@ -251,7 +250,7 @@ __Example__
 
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if(err) return console.error(err);
@@ -291,7 +290,7 @@ __Example__
 
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if(err) return console.error(err);
@@ -319,7 +318,7 @@ __Example__
 
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if(err) return console.error(err);
@@ -349,7 +348,7 @@ __Example__
 
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if(err) return console.error(err);
@@ -378,7 +377,7 @@ __Example__
 
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if(err) return console.error(err);
@@ -418,7 +417,7 @@ __Example__
 
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if(err) return console.error(err);
@@ -446,7 +445,7 @@ __Arguments__
 __Example__
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if(err) return console.error(err);
@@ -479,7 +478,7 @@ __Example__
 
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if(err) return console.error(err);
@@ -536,7 +535,7 @@ __Example__
 
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if(err) return console.error(err);
@@ -566,7 +565,7 @@ __Example__
 
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if(err) return console.error(err);
@@ -949,7 +948,7 @@ __Example__
 
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if(err) return console.error(err);
@@ -995,7 +994,7 @@ __Example__
 
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if(err) return console.error(err);
@@ -1443,7 +1442,7 @@ __Example__
 
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 // Simple echo bot. He'll repeat anything that you say.
 // Will stop when you say '/stop'
@@ -1538,7 +1537,7 @@ __Example__
 
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if(err) return console.error(err);
@@ -1583,7 +1582,7 @@ __Example__
 
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if(err) return console.error(err);
@@ -1671,7 +1670,7 @@ __Tip__: to find your own ID, you can look inside the cookies. The `userID` is u
 __Example (Basic Message)__
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if(err) return console.error(err);
@@ -1685,7 +1684,7 @@ login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, ap
 __Example (File upload)__
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, api) => {
     if(err) return console.error(err);
@@ -1702,7 +1701,7 @@ login({appState: JSON.parse(fs.readFileSync('appstate.json', 'utf8'))}, (err, ap
 
 __Example (Mention)__
 ```js
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 login({email: "EMAIL", password: "PASSWORD"}, (err, api) => {
     if(err) return console.error(err);
@@ -1726,7 +1725,7 @@ login({email: "EMAIL", password: "PASSWORD"}, (err, api) => {
 
 __Example (Location)__
 ```js
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 login({email: "EMAIL", password: "PASSWORD"}, (err, api) => {
     if(err) return console.error(err);
     var yourID = "000000000000000";
@@ -1808,7 +1807,7 @@ __Example__
 
 ```js
 const fs = require("fs-extra");
-const login = require("fb-chat-api");
+const login = require("lnw-bot-fb");
 
 // Simple echo bot. This will send messages forever.
 
